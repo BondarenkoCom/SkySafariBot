@@ -4,6 +4,8 @@ using Telegram.Bot.Polling;
 using SkySafariBot.helpers;
 using SkySafariBot.BotSettings;
 using Telegram.Bot.Exceptions;
+using Telegram.Bot.Types.Payments;
+using Telegram.Bot.Requests;
 
 namespace TelegramBotExperiments
 {
@@ -96,31 +98,69 @@ namespace TelegramBotExperiments
                                         chatId: message.Chat.Id,
                                         animation: "https://media.giphy.com/media/Y4DeltZ8VmGnTJGyPe/giphy.gif");
 
-                                   
-                                    // Generate the horoscope
-                                    GPTDriver gptDriver = new GPTDriver();
-                                    var generatedHoroscope = await gptDriver.GenerateHoroscope(zodiacSign, false, userName);
+                                    try
+                                    {
+                                        // Generate the horoscope
+                                        GPTDriver gptDriver = new GPTDriver();
+                                        var generatedHoroscope = await gptDriver.GenerateHoroscope(zodiacSign, false, userName);
 
-                                    await botClient.DeleteMessageAsync(
-                                          chatId: sendingGif.Chat.Id,
-                                          messageId: sendingGif.MessageId);
+                                        await botClient.DeleteMessageAsync(
+                                              chatId: sendingGif.Chat.Id,
+                                              messageId: sendingGif.MessageId);
 
-                                    // Send the horoscope
-                                    await botClient.SendTextMessageAsync(
-                                        chatId: message.Chat.Id,
-                                        text: generatedHoroscope);
+                                        // Send the horoscope
+                                        await botClient.SendTextMessageAsync(
+                                            chatId: message.Chat.Id,
+                                            text: generatedHoroscope);
+
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Console.WriteLine("Error generating horoscope: " + ex.ToString());
+                                        await botClient.SendTextMessageAsync(
+                                            chatId: message.Chat.Id,
+                                            text: "Sorry, we encountered an error generating your horoscope. Please try again later.");
+
+                                    }
 
                                     LastHoroscopeDates[message.Chat.Id] = DateTime.UtcNow;
                                 }
                                 break;
+                            case "show your support and help our cosmic journey continue! 🌟✨ donate now! 💖":
+                                {
+                                    var price = new List<LabeledPrice>
+                                    {
+                                        new LabeledPrice("Donate", 1),
+                                    };
 
+                                    var invoice = new SendInvoiceRequest(
+                                        chatId: message.Chat.Id,
+                                        title: "Donate",
+                                        description: "Donate for us",
+                                        payload: "unique_invoice_id", // unique invoice identifier
+                                        providerToken: "provider_token", // your Payoneer API token
+                                        currency: "USD", // currency
+                                        prices: price
+                                    );
+                                    await botClient.SendInvoiceAsync(
+                                        chatId: invoice.ChatId,
+                                        title: invoice.Title,
+                                        description: invoice.Description,
+                                        payload: invoice.Payload,
+                                        providerToken: invoice.ProviderToken,
+                                        currency: invoice.Currency,
+                                        prices: invoice.Prices
+                                    );
+                                }
+                                break;
                             default:
                                 await botClient.SendTextMessageAsync(message.Chat, "Sorry, I didn't understand that. Please select a Zodiac sign from the provided keyboard.");
                                 break;
                         }
                     }
                 }
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine("Error in HandleUpdateAsync: " + ex.ToString());
                 return;
