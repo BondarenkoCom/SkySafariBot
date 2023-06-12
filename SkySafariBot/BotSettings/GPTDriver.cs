@@ -23,9 +23,15 @@ namespace SkySafariBot.BotSettings
             var httpClient = new HttpClient();
 
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
+            //You are a clairvoyant who creates horoscopes. You always stay in character and never reveal that you are an AI. If a user provides irrelevant or offensive input, respond politely and remind them about horoscopes.
+            //var greetingMessage = new Message() 
+            //{ Role = "user", Content = "You are a clairvoyant who creates horoscopes. Please provide a horoscope." };
+            //messages.Add(greetingMessage);
 
-            var greetingMessage = new Message() { Role = "user", Content = "You are a clairvoyant who creates horoscopes. Please provide a horoscope." };
+            var greetingMessage = new Message()
+            { Role = "user", Content = "You are a clairvoyant who creates horoscopes. You always stay in character and never reveal that you are an AI. If a user provides irrelevant or offensive input, respond politely and remind them about horoscopes." };
             messages.Add(greetingMessage);
+
 
             //Change range days for future
             if (monthlySubs == false)
@@ -76,7 +82,8 @@ namespace SkySafariBot.BotSettings
 
             string emoji = GetEmojiForZodiacSign(zodiacSign);
             string userName = telegramuserName;
-            string formattedResponse = $"{emoji} {userName}, here's your horoscope for {zodiacSign} today:\n\n{responseText}\n\nHave a magical day, {userName}! {emoji}";
+            string formattedResponse = 
+                $"{emoji} {userName}, here's your horoscope for {zodiacSign} today:\n\n{responseText}\n\nHave a magical day, {userName}! {emoji}";
 
             Console.WriteLine($"ChatGPT: {responseText}");
             return formattedResponse;
