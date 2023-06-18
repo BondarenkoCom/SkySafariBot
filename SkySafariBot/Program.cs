@@ -12,7 +12,7 @@ namespace TelegramBotExperiments
         static int lastUpdateId = 0;
 
         //static ITelegramBotClient bot = new TelegramBotClient(JsonReader.GetValues().telegramApiTokenDraft);
-        private static readonly ITelegramBotClient bot = new TelegramBotClient(SkySafariBot.helpers.JsonReader.GetValues().telegramApiTokenDraft);
+        private static readonly ITelegramBotClient bot = new TelegramBotClient(SkySafariBot.helpers.JsonReader.GetValues().telegramApiToken);
         private static Dictionary<long, DateTime> LastHoroscopeDates = new Dictionary<long, DateTime>();
         private static Dictionary<long, DateTime> activeUsers = new Dictionary<long, DateTime>();
         private static long yourUserId = 378537742;
@@ -344,11 +344,11 @@ namespace TelegramBotExperiments
             try
             {
                 Console.WriteLine("Bot is start " + bot.GetMeAsync().Result.FirstName);
-                var timer = new System.Timers.Timer(TimeSpan.FromHours(24).TotalMilliseconds);
+                //var timer = new System.Timers.Timer(TimeSpan.FromHours(24).TotalMilliseconds);
                 //var timer = new System.Timers.Timer(TimeSpan.FromMinutes(10).TotalMilliseconds);
-                timer.Elapsed += async (sender, e) => await PostDailyForecast();
-                timer.Start();
-                Console.WriteLine($"timer is starting");
+                //timer.Elapsed += async (sender, e) => await PostDailyForecast();
+                //timer.Start();
+                //Console.WriteLine($"timer is starting");
                 var cts = new CancellationTokenSource();
                 var cancellationToken = cts.Token;
                 var receiverOptions = new ReceiverOptions
